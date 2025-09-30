@@ -9,7 +9,7 @@
 
 ---
 
-## 🌟 **Plataforma de Inteligencia Artificial y Exploración Espacial**
+## 🌟 **Plataforma de Inteligencia Artificial**
 
 Esta aplicación web combina tecnologías modernas con la exploración del cosmos. Permite analizar contenido para detectar si fue generado por inteligencia artificial y explorar imágenes astronómicas de la NASA con explicaciones científicas.
 
