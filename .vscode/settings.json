@@ -1,0 +1,29 @@
+{
+  "scss.lint.unknownAtRules": "ignore",
+  "css.lint.unknownAtRules": "ignore",
+  "scss.lint.validProperties": [],
+  "css.lint.validProperties": [],
+  "css.validate": false,
+  "scss.validate": false,
+  "less.validate": false,
+  "tailwindCSS.includeLanguages": {
+    "html": "html",
+    "scss": "css",
+    "sass": "css"
+  },
+  "tailwindCSS.experimental.configFile": "./tailwind.config.js",
+  "tailwindCSS.emmetCompletions": true,
+  "tailwindCSS.showPixelEquivalents": true,
+  "tailwindCSS.rootFontSize": 16,
+  "files.associations": {
+    "*.css": "tailwindcss",
+    "*.scss": "scss"
+  },
+  "editor.quickSuggestions": {
+    "strings": "on"
+  },
+  "css.customData": [
+    ".vscode/css_custom_data.json"
+  ],
+  "editor.inlayHints.enabled": "on"
+}

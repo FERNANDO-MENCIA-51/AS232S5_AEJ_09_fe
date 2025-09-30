@@ -1,1 +1,598 @@
-/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// PHP-inspired dark theme with colorful accents
+:root {
+  // Primary PHP colors
+  --php-purple: #777BB4;
+  --php-dark-purple: #4F5B93;
+  --php-light-purple: #8892BF;
+  
+  // Colorful card colors
+  --card-green: #10B981;
+  --card-green-dark: #059669;
+  --card-orange: #F59E0B;
+  --card-orange-dark: #D97706;
+  --card-blue: #3B82F6;
+  --card-blue-dark: #2563EB;
+  --card-purple: #8B5CF6;
+  --card-purple-dark: #7C3AED;
+  --card-pink: #EC4899;
+  --card-pink-dark: #DB2777;
+  --card-cyan: #06B6D4;
+  --card-cyan-dark: #0891B2;
+  
+  // Dark theme backgrounds
+  --bg-primary: #1A1B23;
+  --bg-secondary: #252631;
+  --bg-tertiary: #2D2E3F;
+  
+  // Text colors
+  --text-primary: #E2E8F0;
+  --text-secondary: #A0AEC0;
+  --text-muted: #718096;
+  
+  // Status colors
+  --success: #48BB78;
+  --warning: #ED8936;
+  --error: #F56565;
+  --info: #4299E1;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+// Custom scrollbar
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--php-purple);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--php-light-purple);
+}
+
+// Utility classes
+.text-php-purple { color: var(--php-purple); }
+.bg-php-purple { background-color: var(--php-purple); }
+.border-php-purple { border-color: var(--php-purple); }
+
+// Icon fixes for css.gg
+[class*="gg-"] {
+  box-sizing: border-box;
+  position: relative;
+  display: inline-block;
+  transform: scale(1);
+  width: 22px;
+  height: 22px;
+  vertical-align: middle;
+}
+
+[class*="gg-"]::after,
+[class*="gg-"]::before {
+  content: "";
+  display: block;
+  box-sizing: border-box;
+  position: absolute;
+}
+
+// Size variations
+.text-sm [class*="gg-"] {
+  width: 16px;
+  height: 16px;
+}
+
+.text-lg [class*="gg-"] {
+  width: 20px;
+  height: 20px;
+}
+
+.text-xl [class*="gg-"] {
+  width: 24px;
+  height: 24px;
+}
+
+.text-2xl [class*="gg-"] {
+  width: 32px;
+  height: 32px;
+}
+
+.text-4xl [class*="gg-"] {
+  width: 48px;
+  height: 48px;
+}
+
+// Ensure icons are visible
+i[class*="gg-"] {
+  font-style: normal;
+  line-height: 1;
+}
+
+// Spinner animation
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+// Form improvements
+input:focus, select:focus, textarea:focus {
+  box-shadow: 0 0 0 2px rgba(119, 123, 180, 0.2);
+}
+
+// Table improvements
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+// Modal backdrop
+.backdrop-blur-sm {
+  backdrop-filter: blur(4px);
+}
+
+// Smooth transitions
+* {
+  transition-property: color, background-color, border-color, opacity, transform, box-shadow;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// Professional card styling
+.professional-card {
+  background: linear-gradient(145deg, var(--bg-secondary), var(--bg-tertiary));
+  border: 1px solid rgba(119, 123, 180, 0.15);
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.professional-card:hover {
+  box-shadow: 
+    0 10px 15px -3px rgba(119, 123, 180, 0.1),
+    0 4px 6px -2px rgba(119, 123, 180, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+// Enhanced glass effect for educational interface
+.glass-effect-enhanced {
+  background: rgba(37, 38, 49, 0.85);
+  backdrop-filter: blur(20px) saturate(200%);
+  border: 1px solid rgba(119, 123, 180, 0.25);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.15),
+    0 4px 16px rgba(119, 123, 180, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(119, 123, 180, 0.1);
+}
+
+// Futuristic button styles
+.futuristic-button {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--php-purple), var(--php-dark-purple));
+  border: 1px solid rgba(119, 123, 180, 0.3);
+  box-shadow: 
+    0 4px 15px rgba(119, 123, 180, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.futuristic-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.futuristic-button:hover::before {
+  left: 100%;
+}
+
+// Enhanced stats cards
+.stats-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+  border: 1px solid rgba(119, 123, 180, 0.15);
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.stats-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--php-purple), var(--php-light-purple));
+}
+
+// Educational & Professional Typography System
+.heading-primary {
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  font-family: 'Inter', system-ui, sans-serif;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.heading-secondary {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.text-professional {
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: 0.015em;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+// Educational content styling
+.educational-text {
+  font-weight: 400;
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  color: var(--text-secondary);
+}
+
+// Scientific notation and data display
+.data-display {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+// Enhanced activity feed with educational styling
+.activity-item {
+  background: linear-gradient(135deg, var(--bg-tertiary), rgba(45, 46, 63, 0.9));
+  border: 1px solid rgba(119, 123, 180, 0.15);
+  border-radius: 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.activity-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(119, 123, 180, 0.3), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.activity-item:hover {
+  background: linear-gradient(135deg, rgba(45, 46, 63, 0.95), var(--bg-tertiary));
+  border-color: rgba(119, 123, 180, 0.3);
+  transform: translateX(6px) translateY(-2px);
+  box-shadow: 
+    0 8px 25px rgba(119, 123, 180, 0.15),
+    0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.activity-item:hover::before {
+  opacity: 1;
+}
+
+// Colorful card classes
+.card-green { background: linear-gradient(135deg, var(--card-green), var(--card-green-dark)); }
+.card-orange { background: linear-gradient(135deg, var(--card-orange), var(--card-orange-dark)); }
+.card-blue { background: linear-gradient(135deg, var(--card-blue), var(--card-blue-dark)); }
+.card-purple { background: linear-gradient(135deg, var(--card-purple), var(--card-purple-dark)); }
+.card-pink { background: linear-gradient(135deg, var(--card-pink), var(--card-pink-dark)); }
+.card-cyan { background: linear-gradient(135deg, var(--card-cyan), var(--card-cyan-dark)); }
+
+// Background color classes for activity icons
+.bg-card-green { background-color: var(--card-green); }
+.bg-card-orange { background-color: var(--card-orange); }
+.bg-card-blue { background-color: var(--card-blue); }
+.bg-card-purple { background-color: var(--card-purple); }
+
+.glass-effect {
+  background: rgba(119, 123, 180, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(119, 123, 180, 0.2);
+}
+
+.neon-glow {
+  box-shadow: 0 0 20px rgba(119, 123, 180, 0.3);
+}
+
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(119, 123, 180, 0.2);
+}
+// Educational Dashboard Enhancements
+.educational-gradient {
+  background: linear-gradient(135deg, 
+    var(--bg-primary) 0%, 
+    var(--bg-secondary) 25%, 
+    var(--bg-tertiary) 50%, 
+    var(--bg-secondary) 75%, 
+    var(--bg-primary) 100%);
+}
+
+// Futuristic container with educational focus
+.futuristic-container {
+  position: relative;
+  background: rgba(26, 27, 35, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(119, 123, 180, 0.2);
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.futuristic-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    var(--card-green), 
+    var(--card-blue), 
+    var(--card-purple), 
+    var(--card-orange));
+  opacity: 0.8;
+}
+
+// Enhanced stats cards for educational data
+.educational-stats-card {
+  position: relative;
+  background: linear-gradient(145deg, 
+    rgba(37, 38, 49, 0.9), 
+    rgba(45, 46, 63, 0.8));
+  border: 1px solid rgba(119, 123, 180, 0.2);
+  border-radius: 20px;
+  padding: 2rem;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.educational-stats-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(119, 123, 180, 0.1) 90deg,
+    transparent 180deg
+  );
+  animation: rotate 8s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.educational-stats-card:hover::before {
+  opacity: 1;
+}
+
+.educational-stats-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 
+    0 20px 40px rgba(119, 123, 180, 0.2),
+    0 8px 16px rgba(0, 0, 0, 0.15);
+  border-color: rgba(119, 123, 180, 0.4);
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+// Scientific data visualization
+.data-visualization {
+  background: linear-gradient(135deg, 
+    rgba(16, 185, 129, 0.1), 
+    rgba(59, 130, 246, 0.1));
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 16px;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.data-visualization::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, 
+    rgba(16, 185, 129, 0.1) 0%, 
+    transparent 70%);
+  border-radius: 50%;
+}
+
+// Interactive learning elements
+.learning-module {
+  background: rgba(37, 38, 49, 0.8);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 20px;
+  padding: 2rem;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.learning-module:hover {
+  border-color: rgba(139, 92, 246, 0.4);
+  box-shadow: 0 12px 30px rgba(139, 92, 246, 0.15);
+}
+
+.learning-module::before {
+  content: '';
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 8px;
+  height: 8px;
+  background: var(--card-purple);
+  border-radius: 50%;
+  animation: pulse-learning 2s infinite;
+}
+
+@keyframes pulse-learning {
+  0%, 100% { 
+    opacity: 1; 
+    transform: scale(1); 
+  }
+  50% { 
+    opacity: 0.5; 
+    transform: scale(1.2); 
+  }
+}
+
+// Progress indicators for educational content
+.progress-ring {
+  width: 60px;
+  height: 60px;
+  position: relative;
+}
+
+.progress-ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.progress-ring circle {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.progress-ring .background {
+  stroke: rgba(119, 123, 180, 0.2);
+}
+
+.progress-ring .progress {
+  stroke: var(--php-purple);
+  stroke-dasharray: 188.5;
+  stroke-dashoffset: 188.5;
+  transition: stroke-dashoffset 1s ease-in-out;
+}
+
+// Enhanced button styles for educational interface
+.educational-button {
+  position: relative;
+  background: linear-gradient(135deg, var(--php-purple), var(--php-dark-purple));
+  border: 1px solid rgba(119, 123, 180, 0.3);
+  border-radius: 12px;
+  padding: 0.75rem 1.5rem;
+  color: white;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.educational-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.2), 
+    transparent);
+  transition: left 0.5s ease;
+}
+
+.educational-button:hover::before {
+  left: 100%;
+}
+
+.educational-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 20px rgba(119, 123, 180, 0.3),
+    0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+// Responsive design improvements
+@media (max-width: 768px) {
+  .glass-effect-enhanced {
+    backdrop-filter: blur(12px);
+    padding: 1.5rem;
+  }
+  
+  .educational-stats-card {
+    padding: 1.5rem;
+  }
+  
+  .learning-module {
+    padding: 1.5rem;
+  }
+}
+
+// Accessibility improvements
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  .glass-effect-enhanced {
+    border-width: 2px;
+    border-color: var(--php-purple);
+  }
+  
+  .educational-stats-card {
+    border-width: 2px;
+  }
+}
