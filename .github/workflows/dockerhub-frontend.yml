@@ -1,0 +1,129 @@
+name: Frontend - Docker Hub CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - master
+    paths:
+      - "src/**"
+      - "package.json"
+      - "Dockerfile"
+      - "nginx.conf"
+      - ".github/workflows/dockerhub-frontend.yml"
+  pull_request:
+    branches:
+      - main
+      - develop
+      - master
+  workflow_dispatch:
+
+env:
+  DOCKER_IMAGE: luismencia/apis-ai-demos-frontend
+  NODE_VERSION: "20"
+
+jobs:
+  build-and-push-frontend:
+    name: 🚀 Build and Push Frontend to Docker Hub
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout del código
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      # 2. Configurar Node.js
+      - name: 🟢 Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      # 3. Verificar versión de Node y npm
+      - name: 🔍 Verify Node and npm versions
+        run: |
+          node --version
+          npm --version
+
+      # 4. Instalar dependencias
+      - name: 📦 Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      # 5. Build de Angular
+      - name: 🔨 Build Angular application
+        run: npm run build -- --configuration production
+
+      # 6. Verificar que el build fue exitoso
+      - name: ✅ Verify build output
+        run: |
+          ls -lh dist/
+          echo "Build completed successfully!"
+
+      # 7. Extraer metadata para Docker
+      - name: 🏷️ Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.DOCKER_IMAGE }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value={{date 'YYYYMMDD-HHmmss'}}
+          labels: |
+            org.opencontainers.image.title=APIs AI Demos Frontend
+            org.opencontainers.image.description=Angular 19 Frontend for AI Detection and NASA APOD
+            org.opencontainers.image.vendor=Valle Grande
+
+      # 8. Set up QEMU
+      - name: 🔧 Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      # 9. Set up Docker Buildx
+      - name: 🔧 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 10. Login a Docker Hub
+      - name: 🔐 Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      # 11. Build y Push de la imagen Docker
+      - name: 🐳 Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          dockerfile: Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=${{ env.DOCKER_IMAGE }}:buildcache
+          cache-to: type=registry,ref=${{ env.DOCKER_IMAGE }}:buildcache,mode=max
+          platforms: linux/amd64,linux/arm64
+
+      # 12. Mostrar información de la imagen
+      - name: 📋 Image Information
+        run: |
+          echo "✅ Docker image pushed successfully!"
+          echo "📦 Image: ${{ env.DOCKER_IMAGE }}"
+          echo "🏷️ Tags: ${{ steps.meta.outputs.tags }}"
+          echo "🔑 Digest: ${{ steps.meta.outputs.digest }}"
+
+      # 13. Crear resumen del job
+      - name: 📊 Job Summary
+        run: |
+          echo "## 🎉 Frontend Build Successful!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📦 Docker Image Details" >> $GITHUB_STEP_SUMMARY
+          echo "- **Repository:** \`${{ env.DOCKER_IMAGE }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tags:** \`${{ steps.meta.outputs.tags }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Digest:** \`${{ steps.meta.outputs.digest }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🚀 Pull Command" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+          echo "docker pull ${{ env.DOCKER_IMAGE }}:latest" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY

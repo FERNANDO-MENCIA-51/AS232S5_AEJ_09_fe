@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AiDetectionService } from '../../core/services/ai-detection.service';
-import { AiDetectionQuery, CreateAiDetectionQuery, UpdateAiDetectionQuery } from '../../core/models/ai-detection.model';
+import { AiDetectionQuery, CreateAiDetectionQuery } from '../../core/models/ai-detection.model';
 import { PaginatedResponse } from '../../core/models/common.model';
-import { ModalComponent } from '../../shared/components/modal/modal.component';
+import { AiDetectionService } from '../../core/services/ai-detection.service';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
+import { ModalComponent } from '../../shared/components/modal/modal.component';
 
 @Component({
   selector: 'app-ai-detection',
@@ -426,24 +426,24 @@ export class AiDetectionComponent implements OnInit {
   loading = false;
   saving = false;
   detecting = false;
-  
+
   // Stats
   totalQueries = 0;
   aiGeneratedCount = 0;
   humanWrittenCount = 0;
-  
+
   // Modals
   showCreateModal = false;
   showQuickDetectModal = false;
   showViewModal = false;
   editingQuery: AiDetectionQuery | null = null;
   selectedQuery: AiDetectionQuery | null = null;
-  
+
   // Forms
   formData: CreateAiDetectionQuery = { text: '' };
   quickDetectData = { text: '', lang: '' };
   quickDetectResult: any = null;
-  
+
   // Filters
   filters = {
     lang: '',
@@ -453,7 +453,7 @@ export class AiDetectionComponent implements OnInit {
     size: 10
   };
 
-  constructor(private aiDetectionService: AiDetectionService) {}
+  constructor(private aiDetectionService: AiDetectionService) { }
 
   ngOnInit() {
     this.loadQueries();
@@ -463,25 +463,25 @@ export class AiDetectionComponent implements OnInit {
 
   loadQueries() {
     this.loading = true;
-    
+
     // Try to load with search first, if it fails, try the basic getQueries
     this.aiDetectionService.searchQueries(this.filters).subscribe({
       next: (response) => {
         this.pagination = response;
-        this.queries = response.content;
-        this.totalQueries = response.totalElements;
+        this.queries = response.content || [];
+        this.totalQueries = response.totalElements || 0;
         this.calculateStats();
         this.loading = false;
       },
       error: (searchError) => {
         console.warn('Search queries failed, trying basic getQueries:', searchError);
-        
+
         // Fallback to basic getQueries
         this.aiDetectionService.getQueries(this.filters.page, this.filters.size).subscribe({
           next: (response) => {
             this.pagination = response;
-            this.queries = response.content;
-            this.totalQueries = response.totalElements;
+            this.queries = response.content || [];
+            this.totalQueries = response.totalElements || 0;
             this.calculateStats();
             this.loading = false;
           },
@@ -498,6 +498,13 @@ export class AiDetectionComponent implements OnInit {
   }
 
   calculateStats() {
+    if (!this.queries || !Array.isArray(this.queries)) {
+      this.queries = [];
+      this.aiGeneratedCount = 0;
+      this.humanWrittenCount = 0;
+      return;
+    }
+
     this.aiGeneratedCount = this.queries.filter(q => q.classification === 'AI_GENERATED').length;
     this.humanWrittenCount = this.queries.filter(q => q.classification === 'HUMAN_WRITTEN').length;
   }
@@ -557,7 +564,7 @@ export class AiDetectionComponent implements OnInit {
 
   saveQuery() {
     this.saving = true;
-    
+
     if (this.editingQuery) {
       // For editing, use the update endpoint
       this.aiDetectionService.updateQuery(this.editingQuery.id, this.formData).subscribe({
@@ -582,7 +589,7 @@ export class AiDetectionComponent implements OnInit {
             aiProbability: detectionResult.aiProbability,
             classification: detectionResult.classification
           };
-          
+
           this.aiDetectionService.createQuery(queryData).subscribe({
             next: () => {
               this.saving = false;

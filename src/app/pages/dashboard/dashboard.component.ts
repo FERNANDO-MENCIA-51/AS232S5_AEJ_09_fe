@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { AiDetectionHistoryItem } from '../../core/models/ai-detection.model';
+import { NasaApodHistoryItem } from '../../core/models/nasa-apod.model';
 import { AiDetectionService } from '../../core/services/ai-detection.service';
 import { NasaApodService } from '../../core/services/nasa-apod.service';
 import { NavigationActivity, NavigationTrackerService } from '../../core/services/navigation-tracker.service';
@@ -219,6 +221,148 @@ import { ToastService } from '../../core/services/toast.service';
           </div>
         </div>
 
+        <!-- Recent Queries Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <!-- Recent AI Detection Queries -->
+          <div class="glass-effect-enhanced rounded-2xl p-8 border border-card-green/20">
+            <div class="flex items-center justify-between mb-6">
+              <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-card-green to-card-green-dark rounded-lg flex items-center justify-center">
+                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                  </svg>
+                </div>
+                <h3 class="text-xl font-bold text-text-primary heading-secondary">Últimas Consultas IA</h3>
+              </div>
+              <button
+                (click)="router.navigate(['/ai-detection/history'])"
+                class="text-card-green hover:text-card-green-dark text-sm font-medium transition-colors"
+              >
+                Ver todas →
+              </button>
+            </div>
+            
+            <div class="space-y-3" *ngIf="recentAiDetections.length > 0; else noAiDetections">
+              <div
+                *ngFor="let detection of recentAiDetections"
+                class="p-4 bg-bg-secondary/50 rounded-xl hover:bg-bg-secondary transition-colors cursor-pointer"
+                (click)="router.navigate(['/ai-detection/history'])"
+              >
+                <div class="flex items-start justify-between mb-2">
+                  <span class="text-xs text-text-muted">{{ detection.createdAt | date:'short' }}</span>
+                  <span 
+                    class="text-xs px-2 py-1 rounded-full font-medium"
+                    [ngClass]="{
+                      'bg-error/20 text-error': detection.classification === 'AI_GENERATED',
+                      'bg-success/20 text-success': detection.classification === 'HUMAN_WRITTEN',
+                      'bg-warning/20 text-warning': detection.classification === 'MIXED_CONTENT' || detection.classification === 'UNCERTAIN'
+                    }"
+                  >
+                    {{ detection.classification }}
+                  </span>
+                </div>
+                <p class="text-text-primary text-sm line-clamp-2 mb-2">{{ detection.text }}</p>
+                <div class="flex items-center justify-between">
+                  <span class="text-xs text-text-muted">{{ detection.lang.toUpperCase() }}</span>
+                  <span class="text-xs font-medium text-card-green">{{ (detection.aiProbability * 100).toFixed(1) }}% IA</span>
+                </div>
+              </div>
+            </div>
+            
+            <ng-template #noAiDetections>
+              <div class="text-center py-8">
+                <svg class="w-12 h-12 text-text-muted mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                </svg>
+                <p class="text-text-muted text-sm">No hay consultas de IA aún</p>
+                <button
+                  (click)="navigateToAiDetection()"
+                  class="mt-3 text-card-green hover:text-card-green-dark text-sm font-medium transition-colors"
+                >
+                  Realizar primera consulta →
+                </button>
+              </div>
+            </ng-template>
+          </div>
+
+          <!-- Recent NASA APOD Queries -->
+          <div class="glass-effect-enhanced rounded-2xl p-8 border border-card-orange/20">
+            <div class="flex items-center justify-between mb-6">
+              <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-card-orange to-card-orange-dark rounded-lg flex items-center justify-center">
+                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                  </svg>
+                </div>
+                <h3 class="text-xl font-bold text-text-primary heading-secondary">Últimas Imágenes NASA</h3>
+              </div>
+              <button
+                (click)="router.navigate(['/nasa-apod/history'])"
+                class="text-card-orange hover:text-card-orange-dark text-sm font-medium transition-colors"
+              >
+                Ver todas →
+              </button>
+            </div>
+            
+            <div class="space-y-3" *ngIf="recentNasaApods.length > 0; else noNasaApods">
+              <div
+                *ngFor="let apod of recentNasaApods"
+                class="p-4 bg-bg-secondary/50 rounded-xl hover:bg-bg-secondary transition-colors cursor-pointer"
+                (click)="router.navigate(['/nasa-apod/history'])"
+              >
+                <div class="flex space-x-3">
+                  <div class="flex-shrink-0">
+                    <img 
+                      *ngIf="apod.mediaType === 'image'"
+                      [src]="apod.imageUrl" 
+                      [alt]="apod.title"
+                      class="w-16 h-16 rounded-lg object-cover"
+                    />
+                    <div 
+                      *ngIf="apod.mediaType === 'video'"
+                      class="w-16 h-16 rounded-lg bg-card-orange/20 flex items-center justify-center"
+                    >
+                      <svg class="w-8 h-8 text-card-orange" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-start justify-between mb-1">
+                      <h4 class="text-sm font-medium text-text-primary line-clamp-1">{{ apod.title }}</h4>
+                    </div>
+                    <p class="text-xs text-text-muted mb-2">{{ apod.requestedDate | date:'mediumDate' }}</p>
+                    <span 
+                      class="text-xs px-2 py-1 rounded-full font-medium"
+                      [ngClass]="{
+                        'bg-success/20 text-success': apod.status === 'SUCCESS',
+                        'bg-error/20 text-error': apod.status === 'ERROR'
+                      }"
+                    >
+                      {{ apod.mediaType === 'image' ? '📷 Imagen' : '🎥 Video' }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <ng-template #noNasaApods>
+              <div class="text-center py-8">
+                <svg class="w-12 h-12 text-text-muted mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                <p class="text-text-muted text-sm">No hay imágenes NASA aún</p>
+                <button
+                  (click)="navigateToNasaApod()"
+                  class="mt-3 text-card-orange hover:text-card-orange-dark text-sm font-medium transition-colors"
+                >
+                  Ver imagen del día →
+                </button>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+
         <!-- Enhanced Activity Feed -->
         <div class="glass-effect-enhanced rounded-2xl p-8 border border-php-purple/20">
           <div class="flex items-center justify-between mb-6">
@@ -276,7 +420,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
   loading = false;
   lastUpdated = new Date();
   private activitiesSubscription: Subscription = new Subscription();
-  
+  private refreshInterval: any;
+
+  // Estadísticas
+  aiDetectionCount: number = 0;
+  nasaApodCount: number = 0;
+
+  // Últimas consultas
+  recentAiDetections: AiDetectionHistoryItem[] = [];
+  recentNasaApods: NasaApodHistoryItem[] = [];
+
   stats = [
     {
       label: 'Consultas IA',
@@ -311,17 +464,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
   recentActivity: NavigationActivity[] = [];
 
   constructor(
-    private router: Router,
+    public router: Router,
     private aiDetectionService: AiDetectionService,
     private nasaApodService: NasaApodService,
     private toastService: ToastService,
     private navigationTracker: NavigationTrackerService
-  ) {}
+  ) { }
 
   ngOnInit() {
-    console.log('Dashboard iniciado correctamente');
     this.loadDashboardData();
-    
+    this.startAutoRefresh();
+
     // Suscribirse a las actividades de navegación
     this.activitiesSubscription = this.navigationTracker.activities$.subscribe(
       activities => {
@@ -331,18 +484,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.stopAutoRefresh();
     this.activitiesSubscription.unsubscribe();
   }
 
+  /**
+   * Cargar todos los datos del dashboard
+   * Llama a loadAiDetectionStats y loadNasaApodStats
+   */
   loadDashboardData() {
-    console.log('Cargando datos del dashboard...');
     this.loading = true;
     this.lastUpdated = new Date();
-    
+
     // Inicializar estado de API
     this.stats[3].value = 'Verificando...';
     this.stats[3].trend = 'up';
-    
+
     let completedRequests = 0;
     const totalRequests = 2;
     let hasBackendConnection = false;
@@ -354,56 +511,133 @@ export class DashboardComponent implements OnInit, OnDestroy {
         // Actualizar estado de API basado en si hubo conexión exitosa
         this.stats[3].value = hasBackendConnection ? 'En Línea' : 'Desconectado';
         this.stats[3].trend = hasBackendConnection ? 'up' : 'down';
-        console.log('Carga de dashboard completada');
+        this.updateTotalRequests();
       }
     };
 
-    // Cargar datos de AI Detection (opcional)
-    this.aiDetectionService.getQueries(0, 1).subscribe({
-      next: (response) => {
-        console.log('AI Detection response:', response);
-        this.stats[0].value = response.totalElements.toString();
-        this.stats[0].change = '+12%';
-        this.updateTotalRequests();
+    // Cargar estadísticas de AI Detection
+    this.loadAiDetectionStats()
+      .then(() => {
         hasBackendConnection = true;
-        this.navigationTracker.addCustomActivity('Datos de AI Detection cargados: ' + response.totalElements + ' consultas', 'Éxito');
         checkComplete();
-      },
-      error: (error) => {
-        console.log('AI Detection no disponible:', error);
-        this.stats[0].value = 'N/A';
-        this.stats[0].change = '0%';
-        this.navigationTracker.addCustomActivity('AI Detection no disponible - continuando', 'Advertencia');
+      })
+      .catch(() => {
         checkComplete();
-      }
-    });
+      });
 
-    // Cargar datos de NASA APOD (opcional)
-    this.nasaApodService.getQueries(0, 1).subscribe({
-      next: (response) => {
-        console.log('NASA APOD response:', response);
-        this.stats[1].value = response.totalElements.toString();
-        this.stats[1].change = '+8%';
-        this.updateTotalRequests();
+    // Cargar estadísticas de NASA APOD
+    this.loadNasaApodStats()
+      .then(() => {
         hasBackendConnection = true;
-        this.navigationTracker.addCustomActivity('Datos de NASA APOD cargados: ' + response.totalElements + ' imágenes', 'Éxito');
         checkComplete();
-      },
-      error: (error) => {
-        console.log('NASA APOD no disponible:', error);
-        this.stats[1].value = 'N/A';
-        this.stats[1].change = '0%';
-        this.navigationTracker.addCustomActivity('NASA APOD no disponible - continuando', 'Advertencia');
+      })
+      .catch(() => {
         checkComplete();
-      }
+      });
+  }
+
+  /**
+   * Cargar estadísticas de AI Detection
+   * Obtiene el contador y las últimas 5 consultas
+   */
+  private loadAiDetectionStats(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      // Obtener contador
+      this.aiDetectionService.getHistoryCount().subscribe({
+        next: (count) => {
+          this.aiDetectionCount = count;
+          this.stats[0].value = count.toString();
+          this.stats[0].change = count > 0 ? '+10%' : '0%';
+
+          // Obtener últimas 5 consultas
+          this.aiDetectionService.getHistory().subscribe({
+            next: (history) => {
+              this.recentAiDetections = history.slice(0, 5);
+              resolve();
+            },
+            error: (error) => {
+              console.error('Error al cargar historial de AI Detection:', error);
+              this.recentAiDetections = [];
+              resolve(); // Resolver de todos modos para no bloquear
+            }
+          });
+        },
+        error: (error) => {
+          console.error('Error al cargar contador de AI Detection:', error);
+          this.stats[0].value = '0';
+          this.stats[0].change = '0%';
+          this.aiDetectionCount = 0;
+          this.recentAiDetections = [];
+          reject(error);
+        }
+      });
     });
   }
 
+  /**
+   * Cargar estadísticas de NASA APOD
+   * Obtiene el contador y las últimas 5 consultas
+   */
+  private loadNasaApodStats(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      // Obtener contador
+      this.nasaApodService.getHistoryCount().subscribe({
+        next: (count) => {
+          this.nasaApodCount = count;
+          this.stats[1].value = count.toString();
+          this.stats[1].change = count > 0 ? '+10%' : '0%';
+
+          // Obtener últimas 5 consultas
+          this.nasaApodService.getHistory({ limit: 5 }).subscribe({
+            next: (history) => {
+              this.recentNasaApods = history.slice(0, 5);
+              resolve();
+            },
+            error: (error) => {
+              console.error('Error al cargar historial de NASA APOD:', error);
+              this.recentNasaApods = [];
+              resolve(); // Resolver de todos modos para no bloquear
+            }
+          });
+        },
+        error: (error) => {
+          console.error('Error al cargar contador de NASA APOD:', error);
+          this.stats[1].value = '0';
+          this.stats[1].change = '0%';
+          this.nasaApodCount = 0;
+          this.recentNasaApods = [];
+          reject(error);
+        }
+      });
+    });
+  }
+
+  /**
+   * Actualizar el total de solicitudes sumando ambos contadores
+   */
   private updateTotalRequests() {
-    const aiTotal = this.stats[0].value !== 'N/A' ? parseInt(this.stats[0].value) || 0 : 0;
-    const nasaTotal = this.stats[1].value !== 'N/A' ? parseInt(this.stats[1].value) || 0 : 0;
-    this.stats[2].value = (aiTotal + nasaTotal).toString();
-    this.stats[2].change = aiTotal + nasaTotal > 0 ? '+10%' : '0%';
+    const total = this.aiDetectionCount + this.nasaApodCount;
+    this.stats[2].value = total.toString();
+    this.stats[2].change = total > 0 ? '+10%' : '0%';
+  }
+
+  /**
+   * Iniciar auto-refresh cada 30 segundos
+   */
+  startAutoRefresh(): void {
+    this.refreshInterval = setInterval(() => {
+      this.loadDashboardData();
+    }, 30000); // 30 segundos
+  }
+
+  /**
+   * Detener auto-refresh
+   */
+  stopAutoRefresh(): void {
+    if (this.refreshInterval) {
+      clearInterval(this.refreshInterval);
+      this.refreshInterval = null;
+    }
   }
 
   navigateToAiDetection() {

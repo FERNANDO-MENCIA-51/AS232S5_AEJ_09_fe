@@ -29,25 +29,22 @@ export class ConnectionStatusService {
 
   constructor(private http: HttpClient) {
     // Servicio completamente desactivado para evitar interferencias
-    console.log('ConnectionStatusService: Desactivado para mejor rendimiento');
   }
 
   private initializeDelayedMonitoring() {
     // Monitoreo desactivado completamente
-    console.log('Monitoreo de conexión desactivado');
     return;
   }
 
   private startConnectionMonitoring() {
     // Monitoreo completamente desactivado
-    console.log('startConnectionMonitoring: Desactivado');
     return;
   }
 
   private checkConnectionAsync() {
     // Timeout más corto para verificaciones de fondo
     const timeoutMs = 3000; // 3 segundos timeout
-    
+
     // Probar primero con un endpoint más ligero
     this.http.get(`${this.API_BASE_URL}/health`, {
       observe: 'response',
@@ -91,13 +88,6 @@ export class ConnectionStatusService {
   }
 
   private updateConnectionStatus(isConnected: boolean) {
-    const currentStatus = this.connectionStatusSubject.value;
-    
-    // Solo actualizar si el estado cambió para reducir notificaciones
-    if (currentStatus.isConnected !== isConnected) {
-      console.log(`Estado de conexión cambió: ${isConnected ? 'Conectado' : 'Desconectado'}`);
-    }
-
     const status: ConnectionStatus = {
       isConnected,
       lastCheck: new Date(),
@@ -112,7 +102,7 @@ export class ConnectionStatusService {
   // Método para verificación manual (usado por botones del dashboard)
   public checkConnectionManually(): Observable<boolean> {
     const timeoutMs = 5000; // 5 segundos para verificaciones manuales
-    
+
     return this.http.get(`${this.API_BASE_URL}/ai-detection/queries?page=0&size=1`, {
       observe: 'response',
       responseType: 'json'

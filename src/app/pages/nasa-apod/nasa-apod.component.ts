@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NasaApodService } from '../../core/services/nasa-apod.service';
-import {
-  NasaApodQuery,
-  CreateNasaApodQuery,
-} from '../../core/models/nasa-apod.model';
 import { PaginatedResponse } from '../../core/models/common.model';
-import { ModalComponent } from '../../shared/components/modal/modal.component';
+import {
+  CreateNasaApodQuery,
+  NasaApodQuery,
+} from '../../core/models/nasa-apod.model';
+import { NasaApodService } from '../../core/services/nasa-apod.service';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
+import { ModalComponent } from '../../shared/components/modal/modal.component';
 
 @Component({
   selector: 'app-nasa-apod',
@@ -659,7 +659,7 @@ export class NasaApodComponent implements OnInit {
     size: 12,
   };
 
-  constructor(private nasaApodService: NasaApodService) {}
+  constructor(private nasaApodService: NasaApodService) { }
 
   ngOnInit() {
     this.loadQueries();
@@ -670,19 +670,29 @@ export class NasaApodComponent implements OnInit {
     this.nasaApodService.searchQueries(this.filters).subscribe({
       next: (response) => {
         this.pagination = response;
-        this.queries = response.content;
-        this.totalImages = response.totalElements;
+        this.queries = response.content || [];
+        this.totalImages = response.totalElements || 0;
         this.calculateStats();
         this.loading = false;
       },
       error: (error) => {
         console.error('Error loading queries:', error);
+        this.queries = [];
+        this.totalImages = 0;
         this.loading = false;
       },
     });
   }
 
   calculateStats() {
+    if (!this.queries || !Array.isArray(this.queries)) {
+      this.queries = [];
+      this.videoCount = 0;
+      this.thisMonthCount = 0;
+      this.successRate = 0;
+      return;
+    }
+
     this.videoCount = this.queries.filter(
       (q) => q.mediaType === 'video'
     ).length;

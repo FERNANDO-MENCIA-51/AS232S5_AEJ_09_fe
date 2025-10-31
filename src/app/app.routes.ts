@@ -22,17 +22,41 @@ export const routes: Routes = [
       },
       {
         path: 'ai-detection',
-        loadComponent: () =>
-          import('./pages/ai-detection/ai-detection.component').then(
-            (m) => m.AiDetectionComponent
-          ),
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('./pages/ai-detection/ai-detection.component').then(
+                (m) => m.AiDetectionComponent
+              ),
+          },
+          {
+            path: 'history',
+            loadComponent: () =>
+              import('./pages/ai-detection/ai-detection-history/ai-detection-history.component').then(
+                (m) => m.AiDetectionHistoryComponent
+              ),
+          },
+        ],
       },
       {
         path: 'nasa-apod',
-        loadComponent: () =>
-          import('./pages/nasa-apod/nasa-apod.component').then(
-            (m) => m.NasaApodComponent
-          ),
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('./pages/nasa-apod/nasa-apod.component').then(
+                (m) => m.NasaApodComponent
+              ),
+          },
+          {
+            path: 'history',
+            loadComponent: () =>
+              import('./pages/nasa-apod/nasa-apod-history/nasa-apod-history.component').then(
+                (m) => m.NasaApodHistoryComponent
+              ),
+          },
+        ],
       },
     ],
   },
