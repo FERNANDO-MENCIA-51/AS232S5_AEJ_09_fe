@@ -1,16 +1,41 @@
+# Node modules
 node_modules
+npm-debug.log
+
+# Angular build output
 dist
+.angular
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
 .git
 .gitignore
-.angular
-.vscode
-*.md
-npm-debug.log
-.DS_Store
+
+# Tests
 coverage
+*.spec.ts
+
+# Environment
 .env
 .env.local
-.editorconfig
+
+# Documentation
+README.md
+docs
+
+# CI/CD
 .github
-test-backend.html
-test-endpoints.js
+
+# Misc
+*.log
+.cache
