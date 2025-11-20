@@ -1,10 +1,13 @@
 # Rutas principales del Frontend:
-# - Historial AI Detection: http://localhost:4200/ai-detection/history
-# - Historial NASA APOD: http://localhost:4200/nasa-apod/history
+# - Historial AI Detection: http://localhost:${FRONTEND_PORT}/ai-detection/history
+# - Historial NASA APOD: http://localhost:${FRONTEND_PORT}/nasa-apod/history
 #
 # Comandos útiles:
 # - Levantar: docker-compose -f docker-compose-fe.yml up -d
 # - Detener: docker-compose -f docker-compose-fe.yml down
+#
+# Configuración:
+# - Editar el archivo .env para cambiar puertos y credenciales
 # ============================================
 
 services:
@@ -12,27 +15,27 @@ services:
     image: luismencia/apis-ai-demos:latest
     container_name: apis-ai-backend
     ports:
-      - "${BACKEND_PORT:-9090}:${BACKEND_PORT:-9090}"
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
     command: java -jar /app/app.jar
     environment:
-      SPRING_R2DBC_URL: ${SPRING_R2DBC_URL:-r2dbc:postgresql://ep-billowing-queen-adp2gox4-pooler.c-2.us-east-1.aws.neon.tech:5432/neondb?sslmode=require}
-      SPRING_R2DBC_USERNAME: ${SPRING_R2DBC_USERNAME:-neondb_owner}
-      SPRING_R2DBC_PASSWORD: ${SPRING_R2DBC_PASSWORD:-npg_Xy0FWDfi6AOt}
+      SPRING_R2DBC_URL: ${SPRING_R2DBC_URL}
+      SPRING_R2DBC_USERNAME: ${SPRING_R2DBC_USERNAME}
+      SPRING_R2DBC_PASSWORD: ${SPRING_R2DBC_PASSWORD}
       SPRING_PROFILES_ACTIVE: docker
-      SERVER_PORT: ${BACKEND_PORT:-9090}
-      RAPIDAPI_APIKEY: ${RAPIDAPI_APIKEY:-3f797b008emsh2e4ad644606c6b8p18678cjsn053f92651618}
-      NASA_APIKEY: ${NASA_APIKEY:-JR8yjMmoORyUHGaKOzLOGeWpNblx335ZXjFMXwRd}
+      SERVER_PORT: ${BACKEND_PORT}
+      RAPIDAPI_APIKEY: ${RAPIDAPI_APIKEY}
+      NASA_APIKEY: ${NASA_APIKEY}
     networks:
       - app-network
     restart: unless-stopped
 
   frontend:
-    image: luismencia/09-luis-mencia:develop-b2194c7
+    image: luismencia/apis-ai-demos-frontend:latest
     container_name: apis-ai-frontend
     ports:
-      - "${FRONTEND_PORT:-4200}:80"
+      - "${FRONTEND_PORT}:80"
     environment:
-      APIURL: http://backend:${BACKEND_PORT:-9090}
+      APIURL: http://${BACKEND_HOST}:${BACKEND_PORT}
     depends_on:
       - backend
     networks:
