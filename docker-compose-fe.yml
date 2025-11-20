@@ -1,0 +1,44 @@
+version: "3.8"
+# - Frontend: http://localhost:4200
+
+# - Historial AI Detection: http://localhost:4200/ai-detection/history
+
+# - Historial NASA APOD: http://localhost:4200/nasa-apod/history
+#
+# Comandos útiles:
+# - Levantar: docker-compose -f docker-compose-fe.yml up -d
+# - Detener: docker-compose -f docker-compose-fe.yml down
+# ============================================
+
+services:
+  backend:
+    image: luismencia/apis-ai-demos:latest
+    container_name: apis-ai-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_R2DBC_URL: r2dbc:postgresql://ep-billowing-queen-adp2gox4-pooler.c-2.us-east-1.aws.neon.tech:5432/neondb?sslmode=require
+      SPRING_R2DBC_USERNAME: neondb_owner
+      SPRING_R2DBC_PASSWORD: npg_Xy0FWDfi6AOt
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+      RAPIDAPI_APIKEY: 3f797b008emsh2e4ad644606c6b8p18678cjsn053f92651618
+      NASA_APIKEY: JR8yjMmoORyUHGaKOzLOGeWpNblx335ZXjFMXwRd
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  frontend:
+    image: luismencia/apis-ai-demos-frontend:latest
+    container_name: apis-ai-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+    restart: unless-stopped
+
+networks:
+  app-network:
+    driver: bridge

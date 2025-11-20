@@ -11,6 +11,7 @@ on:
       - "package.json"
       - "Dockerfile"
       - "nginx.conf"
+      - "docker-compose-fe.yml"
       - ".github/workflows/dockerhub-frontend.yml"
   pull_request:
     branches:
