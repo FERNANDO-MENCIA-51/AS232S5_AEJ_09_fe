@@ -30,7 +30,7 @@ services:
     restart: unless-stopped
 
   frontend:
-    image: luismencia/apis-ai-demos-frontend:latest
+    image: luismencia/apis-ai-demos-frontend:buildcache
     container_name: apis-ai-frontend
     ports:
       - "${FRONTEND_PORT}:80"
