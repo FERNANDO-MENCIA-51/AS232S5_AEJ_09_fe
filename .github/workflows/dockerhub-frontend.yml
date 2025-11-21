@@ -52,7 +52,7 @@ jobs:
 
       # 5. Build de Angular
       - name: 🔨 Build Angular application
-        run: npm run build -- --configuration production
+        run: npm run build
 
       # 6. Verificar que el build fue exitoso
       - name: ✅ Verify build output
