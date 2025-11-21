@@ -22,7 +22,7 @@ COPY package*.json ./
 # Install dependencies
 RUN npm ci --only=production
 
-# Copy source code
+# Copy source code --- 
 COPY . .
 
 # Build the application for production
