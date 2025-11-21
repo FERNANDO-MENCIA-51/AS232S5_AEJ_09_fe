@@ -79,15 +79,62 @@ Accede a una colección de imágenes y videos astronómicos seleccionados diaria
 
 ---
 
-## 📦 **Instalación y Configuración**
+## 🐳 **Docker Deployment (Recomendado)**
+
+### **Opción 1: Usar Docker Compose (Más Fácil)**
+
+Esta es la forma más rápida de ejecutar la aplicación completa (Frontend + Backend):
+
+```bash
+# 1. Iniciar servicios
+docker-compose up -d
+
+# 2. Acceder a la aplicación
+# Frontend: http://localhost:4200
+# Backend: http://localhost:8080
+```
+
+**Características:**
+- ✅ Sin necesidad de instalar Node.js ni dependencias
+- ✅ Backend y Frontend conectados automáticamente
+- ✅ Puertos configurables mediante archivo `.env`
+- ✅ Imágenes públicas en Docker Hub
+
+**Cambiar puertos:**
+```bash
+# Editar archivo .env
+BACKEND_PORT=9090
+FRONTEND_PORT=3000
+
+# Reiniciar servicios
+docker-compose down
+docker-compose up -d
+```
+
+**Ver logs:**
+```bash
+docker-compose logs -f
+```
+
+**Detener servicios:**
+```bash
+docker-compose down
+```
+
+📖 **Para más detalles:** Ver [DOCKER-COMPOSE-GUIDE.md](./DOCKER-COMPOSE-GUIDE.md)
+
+---
+
+## 📦 **Instalación y Configuración Local**
 
 ### **Requisitos Previos**
 
 Antes de comenzar, asegúrate de tener instalado:
 
-- **Node.js** (versión 18.x o superior)
-- **npm** (versión 9.x o superior)
-- **Angular CLI** (versión 19.x)
+- **Docker** y **Docker Compose** (para deployment con Docker)
+- **Node.js** (versión 18.x o superior) - solo para desarrollo local
+- **npm** (versión 9.x o superior) - solo para desarrollo local
+- **Angular CLI** (versión 19.x) - solo para desarrollo local
 
 ### **Instalación**
 
@@ -316,7 +363,31 @@ ng lint
 
 ## 🚀 **Deployment**
 
-### **Build para Producción**
+### **Opción 1: Deployment con Docker (Recomendado)**
+
+**Usando Docker Compose:**
+```bash
+# 1. Configurar variables en .env
+# 2. Iniciar servicios
+docker-compose up -d
+```
+
+**Usando imágenes de Docker Hub:**
+```bash
+# Backend
+docker pull luismencia/apis-ai-demos:latest
+docker run -p 8080:8080 luismencia/apis-ai-demos:latest
+
+# Frontend
+docker pull luismencia/apis-ai-demos-frontend:latest
+docker run -p 4200:80 -e APIURL=http://localhost:8080 luismencia/apis-ai-demos-frontend:latest
+```
+
+**Imágenes Docker Hub:**
+- Backend: https://hub.docker.com/r/luismencia/apis-ai-demos
+- Frontend: https://hub.docker.com/r/luismencia/apis-ai-demos-frontend
+
+### **Opción 2: Build Manual para Producción**
 
 ```bash
 npm run build:prod
@@ -332,6 +403,8 @@ ng build --configuration production
 - ✅ Optimización de imágenes
 - ✅ Compresión de assets
 - ✅ Service Worker (PWA ready)
+- ✅ Docker multi-stage builds
+- ✅ Nginx optimizado para producción
 
 ---
 

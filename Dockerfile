@@ -1,5 +1,18 @@
-# Stage 1: Build Angular application
+# ============================================
+# Multi-Stage Dockerfile para Angular + Nginx
+# ============================================
+# Este Dockerfile construye la aplicación Angular
+# y la sirve usando Nginx con soporte para variables
+# de entorno dinámicas en tiempo de ejecución
+# ============================================
+
+# ============================================
+# STAGE 1: Build Angular Application
+# ============================================
 FROM node:20-alpine AS build
+
+LABEL maintainer="Fernando Mencia"
+LABEL description="APIs AI Demos - Frontend Angular Build Stage"
 
 WORKDIR /app
 
@@ -7,31 +20,71 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci
+RUN npm ci --only=production
 
 # Copy source code
 COPY . .
 
-# Build the application
+# Build the application for production
 RUN npm run build
 
-# Stage 2: Serve with Nginx
+# ============================================
+# STAGE 2: Serve with Nginx
+# ============================================
 FROM nginx:alpine
 
-# Install envsubst for environment variable substitution
+LABEL maintainer="Fernando Mencia"
+LABEL description="APIs AI Demos - Frontend Angular Production"
+
+# Install gettext for envsubst (environment variable substitution)
 RUN apk add --no-cache gettext
 
-# Copy custom nginx config
+# Copy custom nginx configuration
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Copy built application from build stage
 COPY --from=build /app/dist/as232-s5-aej-09-fe/browser /usr/share/nginx/html
 
-# Create a startup script that will replace environment variables
-RUN printf '#!/bin/sh\nset -e\n\nexport APIURL=${APIURL:-http://localhost:8080}\n\nfind /usr/share/nginx/html -name "*.js" -type f -exec sed -i "s|http://localhost:[0-9]*|${APIURL}|g" {} +\n\nexec nginx -g "daemon off;"\n' > /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh
+# Create startup script to inject environment variables
+# This script replaces API URLs in JavaScript files at container startup
+RUN printf '#!/bin/sh\n\
+set -e\n\
+\n\
+# Set default API URL if not provided\n\
+export APIURL=${APIURL:-http://localhost:8080}\n\
+\n\
+echo "=========================================="\n\
+echo "Frontend Starting..."\n\
+echo "=========================================="\n\
+echo "API URL: ${APIURL}"\n\
+echo "=========================================="\n\
+\n\
+# Replace API URLs in all JavaScript files\n\
+# This allows dynamic configuration without rebuilding the image\n\
+echo "Configuring API endpoints..."\n\
+find /usr/share/nginx/html -name "*.js" -type f -exec sed -i "s|http://localhost:[0-9]*|${APIURL}|g" {} +\n\
+\n\
+echo "Configuration complete!"\n\
+echo "=========================================="\n\
+\n\
+# Start Nginx\n\
+exec nginx -g "daemon off;"\n\
+' > /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh
 
 # Expose port 80
 EXPOSE 80
 
-# Use the startup script
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD wget --quiet --tries=1 --spider http://localhost/health || exit 1
+
+# Use the startup script as entrypoint
 ENTRYPOINT ["/docker-entrypoint.sh"]
+
+# ============================================
+# BUILD INSTRUCTIONS:
+# ============================================
+# Build:  docker build -t luismencia/apis-ai-demos-frontend:latest .
+# Run:    docker run -p 4200:80 -e APIURL=http://localhost:8080 luismencia/apis-ai-demos-frontend:latest
+# Push:   docker push luismencia/apis-ai-demos-frontend:latest
+# ============================================

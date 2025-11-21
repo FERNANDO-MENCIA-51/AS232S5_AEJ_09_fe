@@ -11,7 +11,6 @@ on:
       - "package.json"
       - "Dockerfile"
       - "nginx.conf"
-      - "docker-compose-fe.yml"
       - ".github/workflows/dockerhub-frontend.yml"
   pull_request:
     branches:
@@ -95,10 +94,11 @@ jobs:
 
       # 11. Build y Push de la imagen Docker
       - name: 🐳 Build and Push Docker Image
+        id: docker_build
         uses: docker/build-push-action@v5
         with:
           context: .
-          dockerfile: Dockerfile
+          file: Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -112,17 +112,17 @@ jobs:
           echo "✅ Docker image pushed successfully!"
           echo "📦 Image: ${{ env.DOCKER_IMAGE }}"
           echo "🏷️ Tags: ${{ steps.meta.outputs.tags }}"
-          echo "🔑 Digest: ${{ steps.meta.outputs.digest }}"
+          echo "🔑 Digest: ${{ steps.docker_build.outputs.digest }}"
 
       # 13. Crear resumen del job
       - name: 📊 Job Summary
         run: |
           echo "## 🎉 Frontend Build Successful!" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 📦 Docker Image Details" >> $GITHUB_STEP_SUMMARY
           echo "- **Repository:** \`${{ env.DOCKER_IMAGE }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- **Tags:** \`${{ steps.meta.outputs.tags }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "- **Digest:** \`${{ steps.meta.outputs.digest }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Digest:** \`${{ steps.docker_build.outputs.digest }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 🚀 Pull Command" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
