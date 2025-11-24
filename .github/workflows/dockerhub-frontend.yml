@@ -8,9 +8,12 @@ on:
       - master
     paths:
       - "src/**"
+      - "public/**"
       - "package.json"
       - "Dockerfile"
       - "nginx.conf"
+      - "generate-config.js"
+      - ".env"
       - ".github/workflows/dockerhub-frontend.yml"
   pull_request:
     branches:
