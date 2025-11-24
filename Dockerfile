@@ -59,6 +59,10 @@ echo "=========================================="\n\
 echo "API URL: ${APIURL}"\n\
 echo "=========================================="\n\
 \n\
+# Generate config.json with dynamic API URL\n\
+echo "Generating config.json..."\n\
+echo "{\\"apiUrl\\": \\"${APIURL}\\"}" > /usr/share/nginx/html/config.json\n\
+\n\
 # Replace API URLs in all JavaScript files\n\
 # This allows dynamic configuration without rebuilding the image\n\
 echo "Configuring API endpoints..."\n\
