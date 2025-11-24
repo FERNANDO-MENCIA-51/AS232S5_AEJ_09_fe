@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://api.production.com', // Update with your production URL
+  apiUrl: 'http://localhost:8080', // Docker will replace this with APIURL from .env
   apiVersion: 'v1',
   endpoints: {
     aiDetection: '/api/ai-detection',

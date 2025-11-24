@@ -4,11 +4,12 @@
 
 #   - AI Detection History: http://localhost:4200/ai-detection/history
 #   - NASA APOD History: http://localhost:4200/nasa-apod/history
+#   - Un endpoint de tipo acceso al proyecto, ejemplo: :4200/apis/ia
 
 
 services:
   backend:
-    image: luismencia/apis-ai-demos:latest
+    image: luismencia/apis-ai-backend:latest
     container_name: apis-ai-backend
     ports:
       - "${BACKEND_PORT:-8080}:${BACKEND_PORT:-8080}"
@@ -36,13 +37,13 @@ services:
       start_period: 40s
 
   frontend:
-    image: luismencia/apis-ai-demos-frontend:latest
+    image: luismencia/apis-ai-demos-frontend:buildcache
     container_name: apis-ai-frontend
     ports:
       - "${FRONTEND_PORT:-4200}:80"
     environment:
 
-      APIURL: http://backend:${BACKEND_PORT:-8080}
+      APIURL: http://localhost:${BACKEND_PORT:-8080}
     depends_on:
       backend:
         condition: service_healthy

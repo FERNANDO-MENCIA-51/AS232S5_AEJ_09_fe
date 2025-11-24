@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { catchError, map, timeout } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 export interface ConnectionStatus {
   isConnected: boolean;
@@ -15,7 +16,7 @@ export interface ConnectionStatus {
   providedIn: 'root'
 })
 export class ConnectionStatusService {
-  private readonly API_BASE_URL = 'http://localhost:8080/v1/api';
+  private readonly API_BASE_URL = `${environment.apiUrl}/${environment.apiVersion}/api`;
   private connectionStatusSubject = new BehaviorSubject<ConnectionStatus>({
     isConnected: false,
     lastCheck: new Date(),

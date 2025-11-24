@@ -1,7 +1,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:4545', 
+  apiUrl: 'http://localhost:4545', // Matches BACKEND_PORT in .env for local dev 
   apiVersion: 'v1',
   endpoints: {
     aiDetection: '/api/ai-detection',

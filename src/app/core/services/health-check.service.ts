@@ -1,13 +1,14 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, map, timeout } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HealthCheckService {
-  private readonly API_BASE_URL = 'http://localhost:8080/v1/api';
+  private readonly API_BASE_URL = `${environment.apiUrl}/${environment.apiVersion}/api`;
 
   constructor(private http: HttpClient) {}
 
