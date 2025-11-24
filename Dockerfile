@@ -4,6 +4,7 @@
 # Este Dockerfile construye la aplicación Angular
 # y la sirve usando Nginx con soporte para variables
 # de entorno dinámicas en tiempo de ejecución
+# Actualizado: Configuración dinámica de API URL
 # ============================================
 
 # =====================================
