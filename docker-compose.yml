@@ -29,15 +29,9 @@ services:
     networks:
       - app-network
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:${BACKEND_PORT:-8080}/actuator/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
 
   frontend:
-    image: luismencia/apis-ai-demos-frontend:buildcache
+    image: luismencia/apis-ai-demos-frontend:latest
     container_name: apis-ai-frontend
     ports:
       - "${FRONTEND_PORT:-4200}:80"
@@ -47,17 +41,11 @@ services:
       # - CODESPACES: cambiar BACKEND_HOST en .env a la URL pública del Codespace
       APIURL: http://${BACKEND_HOST:-localhost}:${BACKEND_PORT:-8080}
     depends_on:
-      backend:
-        condition: service_healthy
+      - backend
     networks:
       - app-network
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
+
 networks:
   app-network:
     driver: bridge
