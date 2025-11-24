@@ -42,8 +42,10 @@ services:
     ports:
       - "${FRONTEND_PORT:-4200}:80"
     environment:
-
-      APIURL: http://localhost:${BACKEND_PORT:-8080}
+      # APIURL se configura dinámicamente:
+      # - LOCAL: usa localhost con el puerto del .env
+      # - CODESPACES: cambiar BACKEND_HOST en .env a la URL pública del Codespace
+      APIURL: http://${BACKEND_HOST:-localhost}:${BACKEND_PORT:-8080}
     depends_on:
       backend:
         condition: service_healthy
