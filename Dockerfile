@@ -6,9 +6,9 @@
 # de entorno dinámicas en tiempo de ejecución
 # ============================================
 
-# ============================================
+# =====================================
 # STAGE 1: Build Angular Application
-# ============================================
+# =====================================
 FROM node:20-alpine AS build
 
 LABEL maintainer="Fernando Mencia"
