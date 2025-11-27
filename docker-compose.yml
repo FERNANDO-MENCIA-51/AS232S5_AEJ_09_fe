@@ -8,7 +8,7 @@
 
 services:
   backend:
-    image: luismencia/apis-ai-backend:latest
+    image: luismencia/fernando:latest
     container_name: apis-ai-backend
     ports:
       - "${BACKEND_PORT:-8080}:${BACKEND_PORT:-8080}"
@@ -36,9 +36,9 @@ services:
       - "${FRONTEND_PORT:-4200}:80"
     environment:
       # APIURL se configura dinámicamente:
-      # - LOCAL: usa localhost con el puerto del .env
-      # - CODESPACES: cambiar BACKEND_HOST en .env a la URL pública del Codespace
-      APIURL: http://${BACKEND_HOST:-localhost}:${BACKEND_PORT:-8080}
+      # - LOCAL: usa http://localhost con el puerto del .env
+      # - CODESPACES: usa https:// con la URL pública del Codespace
+      APIURL: ${BACKEND_PROTOCOL:-http}://${BACKEND_HOST:-localhost}:${BACKEND_PORT:-8080}
     depends_on:
       - backend
     networks:
